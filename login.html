@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login and Signup Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    form {
+      max-width: 300px;
+      margin: 0 auto;
+    }
+    input[type="text"],
+    input[type="password"],
+    input[type="submit"] {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    input[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    input[type="submit"]:hover {
+      background-color: #45a049;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .register-link {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .register-link a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Login Form</h2>
+  <form id="loginForm">
+    <input type="text" id="loginUsername" placeholder="Username" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <input type="submit" value="Login">
+  </form>
+
+  <div class="register-link">
+    Don't have an account? <a href="#" id="registerLink">Register</a>
+  </div>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Password</th>
+      </tr>
+    </thead>
+    <tbody id="userTableBody">
+      <!-- User data will be dynamically inserted here -->
+    </tbody>
+  </table>
+</div>
+
+<!-- Registration Form (Initially hidden) -->
+<div id="registrationForm" style="display: none;">
+  <div class="container">
+    <h2>Registration Form</h2>
+    <form id="signupForm">
+      <input type="text" id="signupUsername" placeholder="Username" required>
+      <input type="password" id="signupPassword" placeholder="Password" required>
+      <input type="submit" value="Signup">
+    </form>
+  </div>
+</div>
+
+<script>
+  // Function to handle login
+  function handleLogin(event) {
+    event.preventDefault();
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+
+    const savedUser = JSON.parse(localStorage.getItem(username));
+    if (savedUser && savedUser.password === password) {
+      alert('Login successful!');
+    } else {
+      alert('Invalid username or password');
+    }
+  }
+
+  // Function to handle signup
+  function handleSignup(event) {
+    event.preventDefault();
+    const username = document.getElementById('signupUsername').value;
+    const password = document.getElementById('signupPassword').value;
+
+    // Check if username already exists
+    if (localStorage.getItem(username)) {
+      alert('Username already exists! Please choose another one.');
+      return;
+    }
+
+    // Save new user
+    localStorage.setItem(username, JSON.stringify({ username, password }));
+    alert('Signup successful!');
+  }
+
+  // Populate user table
+  function populateUserTable() {
+    const userTableBody = document.getElementById('userTableBody');
+    userTableBody.innerHTML = '';
+
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      const user = JSON.parse(localStorage.getItem(key));
+      const row = `<tr><td>${user.username}</td><td>${user.password}</td></tr>`;
+      userTableBody.innerHTML += row;
+    }
+  }
+
+  // Attach event listeners to the forms
+  document.getElementById('loginForm').addEventListener('submit', handleLogin);
+  document.getElementById('signupForm').addEventListener('submit', handleSignup);
+
+  // Show registration form when register link is clicked
+  document.getElementById('registerLink').addEventListener('click', function(event) {
+    event.preventDefault();
+    document.getElementById('registrationForm').style.display = 'block';
+  });
+
+  // Populate user table on page load
+  window.addEventListener('load', populateUserTable);
+</script>
+
+</body>
+</html>

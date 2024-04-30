@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Pose Memory Game for Kids</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #8dd0ef; /* Light blue background */
+            margin: 0;
+            padding: 0;
+        }
+        #game-container {
+            width: 70%; /* Increased width */
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f0f8ff; /* Light sky blue background */
+            border-radius: 30px; /* Increased border radius */
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 {
+            color: #0069d9; /* Bright blue heading */
+        }
+        p {
+            color: #333; /* Dark gray paragraph text */
+            font-size: 18px;
+        }
+        .cards-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            justify-items: center;
+            margin-top: 20px;
+        }
+        .card {
+            width: 120px;
+            height: 180px;
+            background-color: #ffd966; /* Yellow background */
+            border-radius: 10px;
+            cursor: pointer;
+            position: relative;
+            perspective: 1000px;
+            transition: transform 0.5s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .card img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            backface-visibility: hidden;
+        }
+        .card .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotateY(180deg);
+        }
+        .card .back {
+            transform: rotateY(0deg);
+        }
+        .card.hidden {
+            background-color: #e0e0e0; /* Light gray background */
+        }
+        .card.flipped .front {
+            transform: rotateY(0deg);
+        }
+        .card.flipped .back {
+            transform: rotateY(180deg);
+        }
+        #yoga-info {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Welcome to the Yoga Pose Memory Game!</h1>
+        <p>Match pairs of colorful yoga pose cards!</p>
+        <div class="cards-container" id="cards-container"></div>
+        <p id="message"></p>
+    </div>
+
+    <div id="yoga-info">
+        <h2>Why Yoga is Great for Kids</h2>
+        <p>Yoga helps kids improve flexibility, strength, and coordination.</p>
+        <p>It also helps them relax, focus better, and manage stress.</p>
+        <p>Playing this game is a fun way to learn about different yoga poses!</p>
+    </div>
+
+    <script>
+        const yogaPoses = [
+            { name: "Tree Pose", image: "tree_pose.jpg" },
+            { name: "Downward Dog Pose", image: "downward_dog.jpg" },
+            { name: "Warrior Pose", image: "warrior_pose.jpg" },
+            { name: "Tree Pose", image: "tree_pose.jpg" },
+            { name: "Downward Dog Pose", image: "downward_dog.jpg" },
+            { name: "Warrior Pose", image: "warrior_pose.jpg" },
+            // Add more yoga poses as needed
+        ];
+
+        const cardsContainer = document.getElementById("cards-container");
+        const messageDiv = document.getElementById("message");
+        let selectedCards = [];
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function createCard(pose) {
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+                <div class="card-face back">
+                    <img src="card_back.jpg" alt="Card Back">
+                </div>
+                <div class="card-face front">
+                    <img src="${pose.image}" alt="${pose.name}">
+                </div>
+            `;
+            card.addEventListener("click", () => flipCard(card));
+            return card;
+        }
+
+        function createGame() {
+            const shuffledPoses = shuffleArray(yogaPoses.slice());
+            shuffledPoses.forEach(pose => {
+                const card = createCard(pose);
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        function flipCard(card) {
+            if (card.classList.contains("hidden") || selectedCards.length >= 2) {
+                return;
+            }
+            card.classList.add("flipped");
+            selectedCards.push(card);
+            if (selectedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            if (selectedCards[0].querySelector(".front img").src === selectedCards[1].querySelector(".front img").src) {
+                messageDiv.textContent = "Match found!";
+                selectedCards = [];
+            } else {
+                selectedCards.forEach(card => card.classList.remove("flipped"));
+                messageDiv.textContent = "No match. Try again!";
+                selectedCards = [];
+            }
+        }
+
+        createGame();
+    </script>
+</body>
+</html>

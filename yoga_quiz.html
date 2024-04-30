@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga and Fitness Quiz for Kids</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            background-color: #a0d2eb; /* Soft blue */
+            margin: 0;
+            padding: 0;
+        }
+        #start-container, #quiz-container {
+            border: 2px solid #ff6f61; /* Coral */
+            padding: 50px; /* Increased padding */
+            width: 650px; /* Increased width */
+            text-align: center;
+            margin: auto;
+            margin-top: 50px;
+            background-color: #fff; /* White */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        button {
+            background-color: #ffcc5c; /* Bright yellow */
+            border: none;
+            color: #ffffff;
+            padding: 20px 42px; /* Increased padding */
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 18px; /* Increased font size */
+            margin: 20px 10px; /* Increased margin */
+            cursor: pointer;
+            border-radius: 10px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background-color: #ffa500; /* Orange */
+        }
+        h2, h3 {
+            color: #ff6f61; /* Coral */
+        }
+        p {
+            color: #2ecc71; /* Green */
+            line-height: 1.5;
+        }
+    </style>
+    
+</head>
+<body>
+    <div id="start-container" style="cursor: pointer;">
+        <h2>Click to Start Quiz</h2>
+    </div>
+
+    <div id="quiz-container" style="display: none;">
+        <h2>Yoga and Fitness Quiz for Kids</h2>
+        <div id="question" style="margin-bottom: 20px;"></div>
+        <div id="options" style="margin-bottom: 20px;"></div>
+        <div id="score" style="margin-top: 30px; font-weight: bold;"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "Which yoga pose involves standing on one leg with the other foot resting on the inner thigh or calf?",
+                options: ["Downward Dog Pose", "Tree Pose", "Child's Pose", "Warrior Pose"],
+                answer: "Tree Pose"
+            },
+            {
+                question: "Which exercise helps improve flexibility and strengthens the core muscles?",
+                options: ["Jumping Jacks", "Plank", "Push-ups", "Squats"],
+                answer: "Plank"
+            },
+            {
+                question: "Which of the following is a breathing technique used in yoga?",
+                options: ["Deep Breathing", "Sprinting", "Holding Breath", "Shouting"],
+                answer: "Deep Breathing"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function displayQuestion() {
+            const questionElement = document.getElementById("question");
+            const optionsElement = document.getElementById("options");
+
+            questionElement.textContent = questions[currentQuestion].question;
+            optionsElement.innerHTML = "";
+
+            const options = questions[currentQuestion].options;
+            for (let i = 0; i < options.length; i += 2) {
+                const optionRow = document.createElement("div");
+                optionRow.classList.add("option-row");
+                for (let j = i; j < i + 2 && j < options.length; j++) {
+                    const optionButton = document.createElement("button");
+                    optionButton.textContent = options[j];
+                    optionButton.onclick = () => selectAnswer(options[j]);
+                    optionRow.appendChild(optionButton);
+                }
+                optionsElement.appendChild(optionRow);
+            }
+        }
+
+        function selectAnswer(selectedOption) {
+            const correctAnswer = questions[currentQuestion].answer;
+            if (selectedOption === correctAnswer) {
+                score++;
+            }
+
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                displayQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            const startContainer = document.getElementById("start-container");
+            const quizContainer = document.getElementById("quiz-container");
+            const scoreElement = document.getElementById("score");
+
+            startContainer.style.display = "none";
+            quizContainer.style.display = "block";
+
+            scoreElement.textContent = `Quiz complete! Your score: ${score}/${questions.length}`;
+
+            // Additional content
+            const additionalContent = document.createElement("div");
+            additionalContent.innerHTML = `
+                <h3>Keep Practicing Yoga!</h3>
+                <p>Yoga makes our bodies and minds strong. It helps us feel calm and happy. Keep practicing different yoga poses every day to stay healthy and full of energy!</p>
+            `;
+            quizContainer.appendChild(additionalContent);
+        }
+
+        // Add click event listener to the start container to start the quiz
+        document.getElementById("start-container").addEventListener("click", function() {
+            displayQuestion();
+            document.getElementById("start-container").style.display = "none";
+            document.getElementById("quiz-container").style.display = "block";
+        });
+    </script>
+</body>
+</html>

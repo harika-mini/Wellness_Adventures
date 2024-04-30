@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nutrient Sorting Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fce4ec; /* Light pink */
+            margin: 0;
+            padding: 0;
+        }
+        #game-container {
+            max-width: 70%; /* Reduced width of the container */
+            margin: 50px auto; /* Centering the container with some margin */
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            height: 550px; /* Increased height of the container */
+        }
+        /* Add background image styles here */
+        #conveyor-belt {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: auto;
+            height: 200px; /* Adjusted height of the conveyor belt */
+        }
+        .food-item {
+            width: 120px; /* Increased width of the food item */
+            height: 120px; /* Increased height of the food item */
+            background-color: #ffcc80; /* Light orange */
+            border-radius: 50%;
+            margin: 0 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 20px; /* Increased font size */
+        }
+        #bins {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .bin {
+            width: 180px; /* Increased width of the bin */
+            height: 180px; /* Increased height of the bin */
+            background-color: #bbdefb; /* Light blue */
+            border: 2px solid #1976d2; /* Dark blue */
+            border-radius: 10px;
+            margin: 0 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 22px; /* Increased font size */
+            font-weight: bold;
+        }
+        #description {
+            margin-top: 30px;
+            text-align: left;
+            padding: 20px;
+            background-color: #ffe0b2; /* Light yellow */
+            border-radius: 10px;
+        }
+        #additional-content {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #ffe0b2; /* Light yellow */
+            border-radius: 10px;
+        }
+    </style>
+    
+    
+    
+    
+</head>
+<body>
+    <div id="game-container">
+        <h1 style="color: #f06292;">Nutrient Sorting Challenge</h1>
+        <p style="color: #9575cd;">Drag and drop each food item into the correct bin based on its nutrient category!</p>
+        <div id="conveyor-belt"></div>
+        <div id="bins">
+            <div class="bin" id="carbohydrates">Carbohydrates</div>
+            <div class="bin" id="proteins">Proteins</div>
+            <div class="bin" id="fats">Fats</div>
+            <div class="bin" id="vitamins">Vitamins</div>
+        </div>
+        <p id="message"></p>
+        <div id="player-count"></div>
+    </div>
+
+    <div id="description">
+        <h2 style="color: #ff7043;">Why is this game important?</h2>
+        <p style="color: #388e3c;">Understanding nutrition is crucial for kids' growth and development. By learning about different nutrients like carbohydrates, proteins, fats, and vitamins, children can make healthier food choices and maintain their overall well-being. This game makes learning about nutrition fun and interactive, helping kids develop lifelong healthy eating habits.</p>
+    </div>
+
+    <div id="additional-content">
+        <h2 style="color: #ff7043;">Nutrition for Kids</h2>
+        <p style="color: #388e3c;">Kids need a variety of nutrients to grow and stay healthy. Some important nutrients include:</p>
+        <ul style="color: #388e3c;">
+            <li>Carbohydrates: Provide energy for daily activities.</li>
+            <li>Proteins: Help build and repair muscles and other tissues.</li>
+            <li>Fats: Essential for brain development and energy.</li>
+            <li>Vitamins: Keep the body's systems functioning properly.</li>
+        </ul>
+        <h2 style="color: #ff7043;">Yoga Fitness for Kids</h2>
+        <p style="color: #388e3c;">Yoga can be a fun way for kids to stay active and healthy. Some benefits of yoga for kids include:</p>
+        <ul style="color: #388e3c;">
+            <li>Improving flexibility and balance.</li>
+            <li>Strengthening muscles.</li>
+            <li>Reducing stress and promoting relaxation.</li>
+            <li>Enhancing concentration and focus.</li>
+        </ul>
+    </div>
+
+    <script>
+        const foodItems = [
+            { name: "Apple", nutrient: "Carbohydrates" },
+            { name: "Chicken", nutrient: "Proteins" },
+            { name: "Avocado", nutrient: "Fats" },
+            { name: "Spinach", nutrient: "Vitamins" },
+            // Add more food items here
+        ];
+
+        const bins = {
+            "Carbohydrates": document.getElementById("carbohydrates"),
+            "Proteins": document.getElementById("proteins"),
+            "Fats": document.getElementById("fats"),
+            "Vitamins": document.getElementById("vitamins")
+        };
+
+        const conveyorBelt = document.getElementById("conveyor-belt");
+        const messageDiv = document.getElementById("message");
+        const playerCountDiv = document.getElementById("player-count");
+
+        let playerCount = 0;
+
+        foodItems.forEach(item => {
+            const foodItem = document.createElement("div");
+            foodItem.className = "food-item";
+            foodItem.textContent = item.name;
+            foodItem.setAttribute("draggable", true);
+            foodItem.addEventListener("dragstart", (event) => {
+                event.dataTransfer.setData("text/plain", item.name);
+            });
+            conveyorBelt.appendChild(foodItem);
+        });
+
+        for (let nutrient in bins) {
+            bins[nutrient].addEventListener("dragover", (event) => {
+                event.preventDefault();
+            });
+            bins[nutrient].addEventListener("drop", (event) => {
+                event.preventDefault();
+                const itemName = event.dataTransfer.getData("text/plain");
+                const item = foodItems.find(i => i.name === itemName);
+                if (item && item.nutrient === nutrient) {
+                    bins[nutrient].style.backgroundColor = "#c8e6c9"; // Light green for correct bin
+                    messageDiv.textContent = `Correct! ${itemName} belongs to ${nutrient}.`;
+                } else {
+                    bins[nutrient].style.backgroundColor = "#ef9a9a"; // Light red for incorrect bin
+                    messageDiv.textContent = `Incorrect! ${itemName} does not belong to ${nutrient}.`;
+                }
+                setTimeout(() => {
+                    bins[nutrient].style.backgroundColor = "#bbdefb"; // Light blue (default color)
+                    messageDiv.textContent = "";
+                }, 1500);
+            });
+        }
+
+        // Simulating player count increase (for demonstration purposes)
+        setInterval(() => {
+            playerCount++;
+            playerCountDiv.textContent = `Players currently playing: ${playerCount}`;
+        }, 10000); // Increase player count every 10 seconds
+    </script>
+</body>
+</html>
